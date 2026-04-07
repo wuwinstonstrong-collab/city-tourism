@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市旅游指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 3px;
+        }
+        
+        /* Hero gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Card hover effect */
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Image zoom on hover */
+        .img-zoom {
+            transition: transform 0.4s ease;
+        }
+        .img-zoom:hover {
+            transform: scale(1.08);
+        }
+        
+        /* Slide animation */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.4s ease forwards;
+        }
+        
+        /* Mobile menu animation */
+        .mobile-menu {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* Tab indicator */
+        .tab-active {
+            position: relative;
+        }
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        /* Rating stars */
+        .star {
+            color: #fbbf24;
+        }
+        
+        /* Hide scrollbar for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="hero-gradient sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Desktop Header -->
+            <div class="hidden md:flex items-center justify-between py-4">
+                <h1 class="text-white text-2xl font-bold flex items-center gap-2">
+                    <i class="fas fa-paper-plane"></i>
+                    城市旅游指南
+                </h1>
+                <nav class="flex items-center gap-1">
+                    <button class="nav-tab px-4 py-2 text-white/80 hover:text-white transition tab-active" data-tab="intro">
+                        <i class="fas fa-city mr-1"></i>城市介绍
+                    </button>
+                    <button class="nav-tab px-4 py-2 text-white/80 hover:text-white transition" data-tab="food">
+                        <i class="fas fa-utensils mr-1"></i>美食
+                    </button>
+                    <button class="nav-tab px-4 py-2 text-white/80 hover:text-white transition" data-tab="scenery">
+                        <i class="fas fa-mountain mr-1"></i>风景
+                    </button>
+                    <button class="nav-tab px-4 py-2 text-white/80 hover:text-white transition" data-tab="hotel">
+                        <i class="fas fa-bed mr-1"></i>酒店
+                    </button>
+                    <button class="nav-tab px-4 py-2 text-white/80 hover:text-white transition" data-tab="other">
+                        <i class="fas fa-info-circle mr-1"></i>攻略
+                    </button>
+                </nav>
+                <div class="relative">
+                    <select id="citySelect" class="appearance-none bg-white/20 text-white border-2 border-white/30 rounded-full px-4 py-2 pr-10 cursor-pointer hover:bg-white/30 transition backdrop-blur">
+                        <option value="shanghai" class="text-gray-800">上海</option>
+                        <option value="wuhan" class="text-gray-800">武汉</option>
+                        <option value="beijing" class="text-gray-800">北京</option>
+                        <option value="shenzhen" class="text-gray-800">深圳</option>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white text-xs pointer-events-none"></i>
+                </div>
+            </div>
+            
+            <!-- Mobile Header -->
+            <div class="md:hidden flex items-center justify-between py-3">
+                <h1 class="text-white text-lg font-bold flex items-center gap-2">
+                    <i class="fas fa-paper-plane"></i>
+                    城市旅游指南
+                </h1>
+                <div class="flex items-center gap-3">
+                    <select id="citySelectMobile" class="appearance-none bg-white/20 text-white border-2 border-white/30 rounded-full px-3 py-1.5 pr-8 text-sm cursor-pointer hover:bg-white/30 transition backdrop-blur">
+                        <option value="shanghai" class="text-gray-800">上海</option>
+                        <option value="wuhan" class="text-gray-800">武汉</option>
+                        <option value="beijing" class="text-gray-800">北京</option>
+                        <option value="shenzhen" class="text-gray-800">深圳</option>
+                    </select>
+                    <button id="menuBtn" class="text-white text-xl p-2">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="mobile-menu fixed inset-0 bg-black/50 z-50 hidden">
+            <div class="bg-white w-72 h-full shadow-2xl">
+                <div class="hero-gradient p-4 flex items-center justify-between">
+                    <h2 class="text-white text-lg font-bold">导航菜单</h2>
+                    <button id="closeMenuBtn" class="text-white text-xl p-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <nav class="p-4 flex flex-col gap-2">
+                    <button class="mobile-nav-tab flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-primary/10 hover:text-primary transition" data-tab="intro">
+                        <i class="fas fa-city w-6"></i>
+                        <span>城市介绍</span>
+                    </button>
+                    <button class="mobile-nav-tab flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-primary/10 hover:text-primary transition" data-tab="food">
+                        <i class="fas fa-utensils w-6"></i>
+                        <span>美食推荐</span>
+                    </button>
+                    <button class="mobile-nav-tab flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-primary/10 hover:text-primary transition" data-tab="scenery">
+                        <i class="fas fa-mountain w-6"></i>
+                        <span>风景推荐</span>
+                    </button>
+                    <button class="mobile-nav-tab flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-primary/10 hover:text-primary transition" data-tab="hotel">
+                        <i class="fas fa-bed w-6"></i>
+                        <span>酒店推荐</span>
+                    </button>
+                    <button class="mobile-nav-tab flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-primary/10 hover:text-primary transition" data-tab="other">
+                        <i class="fas fa-info-circle w-6"></i>
+                        <span>实用攻略</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="content" class="flex-1 max-w-6xl mx-auto px-4 py-6 w-full">
+        <!-- Content loaded dynamically -->
+    </main>
+
+    <!-- Bottom Tab Bar (Mobile Only) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+        <div class="flex justify-around py-2">
+            <button class="bottom-tab flex flex-col items-center py-1 px-3 text-primary" data-tab="intro">
+                <i class="fas fa-city text-lg"></i>
+                <span class="text-xs mt-1">介绍</span>
+            </button>
+            <button class="bottom-tab flex flex-col items-center py-1 px-3 text-gray-400" data-tab="food">
+                <i class="fas fa-utensils text-lg"></i>
+                <span class="text-xs mt-1">美食</span>
+            </button>
+            <button class="bottom-tab flex flex-col items-center py-1 px-3 text-gray-400" data-tab="scenery">
+                <i class="fas fa-mountain text-lg"></i>
+                <span class="text-xs mt-1">风景</span>
+            </button>
+            <button class="bottom-tab flex flex-col items-center py-1 px-3 text-gray-400" data-tab="hotel">
+                <i class="fas fa-bed text-lg"></i>
+                <span class="text-xs mt-1">酒店</span>
+            </button>
+            <button class="bottom-tab flex flex-col items-center py-1 px-3 text-gray-400" data-tab="other">
+                <i class="fas fa-info-circle text-lg"></i>
+                <span class="text-xs mt-1">攻略</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm">© 2026 城市旅游指南 - 让旅行更简单</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
